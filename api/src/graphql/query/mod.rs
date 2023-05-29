@@ -1,6 +1,7 @@
 use entity::async_graphql;
 
 pub mod note;
+pub mod map;
 
 pub use note::NoteQuery;
 
