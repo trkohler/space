@@ -25,7 +25,7 @@ impl PlanMutation {
         ctx: &Context<'_>,
         input: CreatePlan,
         file: Upload,
-    ) -> Result<plan::Model> {
+    ) -> Result<plan::PlanNode> {
         let db = ctx.data::<Database>().unwrap();
         let conn = db.get_connection();
         let converted_file: Result<Vec<_>, _> =

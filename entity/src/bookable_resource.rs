@@ -54,3 +54,12 @@ impl Entity {
 }
 
 impl ActiveModelBehavior for ActiveModel {}
+
+
+#[derive(SimpleObject)]
+pub struct ResourceNode {
+    pub id: i32,
+    pub coordinate: Coordinate,
+    pub qr_code: Option<String>,
+    pub kind: BookableResourceKind
+}
