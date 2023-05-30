@@ -3,8 +3,8 @@ use sea_orm::{entity::prelude::*, DeleteMany, JsonValue};
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize, SimpleObject)]
-#[sea_orm(table_name = "maps")]
-#[graphql(concrete(name = "Map", params()))]
+#[sea_orm(table_name = "maps")] // TODO: Change to "plans"
+#[graphql(concrete(name = "Map", params()))] // TODO: Change to "Plan"
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
@@ -15,16 +15,19 @@ pub struct Model {
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, FromJsonQueryResult, SimpleObject)]
 pub struct Coordinate {
-    x: u32,
-    y: u32,
+    pub x: u32,
+    pub y: u32,
 }
 
-#[derive(Copy, Clone, Debug, EnumIter)]
-pub enum Relation {}
+#[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
+pub enum Relation {
+    #[sea_orm(has_many = "super::bookable_resource::Entity")]
+    BookableResource,
+}
 
-impl RelationTrait for Relation {
-    fn def(&self) -> RelationDef {
-        panic!("No RelationDef")
+impl Related<super::bookable_resource::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::BookableResource.def()
     }
 }
 

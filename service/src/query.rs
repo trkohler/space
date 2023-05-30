@@ -1,9 +1,13 @@
-use ::entity::{note, note::Entity as Note};
+use ::entity::{plan, plan::Entity as Map, note, note::Entity as Note};
 use sea_orm::*;
 
 pub struct Query;
 
 impl Query {
+    pub async fn find_map_by_id(db: &DbConn, id: i32) -> Result<Option<plan::Model>, DbErr> {
+        Map::find_by_id(id).one(db).await
+    }
+
     pub async fn find_note_by_id(db: &DbConn, id: i32) -> Result<Option<note::Model>, DbErr> {
         Note::find_by_id(id).one(db).await
     }

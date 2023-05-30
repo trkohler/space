@@ -1,5 +1,9 @@
 use ::entity::{note, note::Entity as Note};
+use ::entity::async_graphql::{InputType, Upload};
+use ::entity::plan;
+use ::entity::plan::Coordinate;
 use sea_orm::*;
+use std::io::Read;
 
 pub struct Mutation;
 
@@ -50,5 +54,24 @@ impl Mutation {
 
     pub async fn delete_all_notes(db: &DbConn) -> Result<DeleteResult, DbErr> {
         Note::delete_many().exec(db).await
+    }
+
+    pub async fn create_plan(
+        db: &DbConn,
+        coordinate: Coordinate,
+        file: Vec<u8>,
+    ) -> Result<plan::Model, DbErr> {
+        let active_model = plan::ActiveModel {
+            coordinates: Set(coordinate.to_owned()),
+            image: Set(file),
+            ..Default::default()
+        };
+        let res = plan::Entity::insert(active_model).exec(db).await?;
+
+        Ok(plan::Model {
+            id: res.last_insert_id,
+            coordinates: coordinate,
+            image: Vec::new(),
+        })
     }
 }

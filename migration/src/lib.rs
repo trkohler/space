@@ -2,6 +2,8 @@ pub use sea_orm_migration::prelude::*;
 
 mod m20220101_000001_create_table;
 mod m20230528_create_table;
+mod m20230529_create_table;
+mod statements;
 
 pub struct Migrator;
 
@@ -11,6 +13,7 @@ impl MigratorTrait for Migrator {
         vec![
             Box::new(m20220101_000001_create_table::Migration),
             Box::new(m20230528_create_table::Migration),
+            Box::new(m20230529_create_table::Migration),
         ]
     }
 }

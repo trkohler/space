@@ -1,3 +1,5 @@
+#![feature(iterator_try_collect)]
+
 mod db;
 mod graphql;
 
