@@ -24,11 +24,11 @@ pub enum BookableResourceKind {
 }
 
 #[derive(
-    Clone, Debug, PartialEq, Eq, Serialize, Deserialize, FromJsonQueryResult, SimpleObject,
+    Clone, Debug, PartialEq, Serialize, Deserialize, FromJsonQueryResult, SimpleObject,
 )]
 pub struct Coordinate {
-    pub x: u32,
-    pub y: u32,
+    pub x: f32,
+    pub y: f32,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
@@ -50,6 +50,12 @@ impl Related<super::plan::Entity> for Entity {
 impl Entity {
     pub fn find_by_id(id: i32) -> Select<Entity> {
         Self::find().filter(Column::Id.eq(id))
+    }
+
+    pub fn find_by_coordinates(plan_id: i32, coordinate: Coordinate) -> Select<Entity> {
+        Self::find()
+            .filter(Column::PlanId.eq(plan_id))
+            .filter(Column::Coordinate.eq(coordinate))
     }
 }
 

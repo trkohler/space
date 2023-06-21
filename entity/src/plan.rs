@@ -1,24 +1,15 @@
 use crate::bookable_resource;
 use async_graphql::*;
-use sea_orm::{entity::prelude::*, DeleteMany, JsonValue, SelectTwoMany};
+use sea_orm::{entity::prelude::*, SelectTwoMany};
 use serde::{Deserialize, Serialize};
 use crate::bookable_resource::ResourceNode;
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
-#[sea_orm(table_name = "maps")] // TODO: Change to "plans"
+#[sea_orm(table_name = "plans")]
 pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
     pub image: Vec<u8>,
-    pub coordinates: Coordinate,
-}
-
-#[derive(
-    Clone, Debug, PartialEq, Eq, Serialize, Deserialize, FromJsonQueryResult, SimpleObject,
-)]
-pub struct Coordinate {
-    pub x: u32,
-    pub y: u32,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
