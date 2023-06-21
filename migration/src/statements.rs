@@ -3,7 +3,7 @@ use entity::sea_orm::sea_query::{Table, TableCreateStatement, TableDropStatement
 use entity::sea_orm::EntityTrait;
 
 pub fn get_seaorm_create_stmt<E: EntityTrait>(e: E) -> TableCreateStatement {
-    let schema = Schema::new(DbBackend::Sqlite);
+    let schema = Schema::new(DbBackend::MySql);
 
     schema
         .create_table_from_entity(e)
