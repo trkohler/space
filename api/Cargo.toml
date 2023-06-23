@@ -1,5 +1,5 @@
 [package]
-name = "graphql-example-api"
+name = "graphql-api"
 authors = ["Aaron Leopold <aaronleopold1221@gmail.com>"]
 version = "0.1.0"
 edition = "2021"
@@ -14,3 +14,4 @@ async-graphql-axum = "5.0.9"
 entity = { path = "../entity" }
 migration = { path = "../migration" }
 tower-http = { version="0.4.0", features=["cors"] }
+log = "0.4.19"
