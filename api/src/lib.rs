@@ -1,5 +1,3 @@
-#![feature(iterator_try_collect)]
-
 mod db;
 mod graphql;
 
@@ -7,7 +5,6 @@ use entity::async_graphql;
 
 use async_graphql::http::{playground_source, GraphQLPlaygroundConfig};
 use async_graphql_axum::{GraphQLRequest, GraphQLResponse};
-use axum::http::Method;
 pub use axum::{
     extract::Extension,
     response::{Html, IntoResponse},
@@ -15,9 +12,6 @@ pub use axum::{
     Router,
 };
 pub use graphql::schema::{build_schema, AppSchema};
-
-#[cfg(debug_assertions)]
-use dotenvy::dotenv;
 pub use tower_http::cors::CorsLayer;
 
 pub async fn graphql_handler(schema: Extension<AppSchema>, req: GraphQLRequest) -> GraphQLResponse {

@@ -21,7 +21,7 @@ impl PlanMutation {
         let db = ctx.data::<Database>().unwrap();
         let conn = db.get_connection();
         let converted_file: Result<Vec<_>, _> =
-            file.value(ctx).unwrap().content.bytes().try_collect();
+            file.value(ctx).unwrap().content.bytes().collect();
         let converted_file = converted_file.expect("Cannot convert file");
 
         // Ok(Mutation::create_note(conn, input.into_model_with_arbitrary_id()).await?)
