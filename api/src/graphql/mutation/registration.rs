@@ -3,8 +3,9 @@ use crate::async_graphql::{ErrorExtensions, Upload};
 use crate::db::Database;
 use async_graphql::{Context, Object, Result};
 use entity::async_graphql::{self, InputObject, SimpleObject};
-use entity::plan;
 
+use crate::AppState;
+use axum::extract::State;
 use google_oauth::AsyncClient;
 use graphql_example_service::Mutation;
 use jsonwebtoken::{decode, DecodingKey, Validation};
@@ -17,34 +18,20 @@ pub struct RegistrationMutation;
 #[derive(InputObject, Debug)]
 pub struct UserInput {
     pub google_jwt_token: String,
-    pub client_id: String,
-}
-#[derive(Debug, Serialize, Deserialize)]
-struct Claims {
-    sub: String,
-    iss: String,
-    aud: String,
-    azp: String,
-    email: String,
-    email_verified: bool,
-    exp: i64,
-    family_name: String,
-    given_name: String,
-    iat: i64,
-    jti: String,
-    name: String,
-    nbf: i64,
-    picture: String,
 }
 
 #[Object]
 impl RegistrationMutation {
     pub async fn register(&self, ctx: &Context<'_>, user_input: UserInput) -> Result<&str> {
         println!("registering user with input {:?}", user_input);
+        let client_id = ctx
+            .data::<AppState>()
+            .unwrap()
+            .secrets
+            .get("GOOGLE_CLIENT_ID")
+            .unwrap();
 
-        let client = AsyncClient::new(
-            "612437101924-59mhs9gv5j3m0lhcrq97pj7tjhmnm4b7.apps.googleusercontent.com",
-        );
+        let client = AsyncClient::new(client_id);
         let data = client.validate_id_token(user_input.google_jwt_token).await;
         match data {
             Ok(data) => {

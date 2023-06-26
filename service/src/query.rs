@@ -1,6 +1,6 @@
 use ::entity::bookable_resource::{Coordinate, Model as ResourceModel, ResourceNode};
 use ::entity::plan::{Model as PlanModel, PlanNode};
-use ::entity::{note, note::Entity as Note, plan, plan::Entity as Plan};
+use ::entity::{plan, plan::Entity as Plan};
 use sea_orm::*;
 use sea_orm::{DatabaseConnection, DbConn, DbErr};
 
