@@ -12,6 +12,7 @@ pub struct Model {
     pub created_at: DateTime,
     pub updated_at: Option<DateTime>,
     pub oauth_provider: OauthProvider,
+    pub role: Role,
 }
 
 #[derive(EnumIter, DeriveActiveEnum, Debug, PartialEq, Serialize, Deserialize, Clone)]
@@ -19,6 +20,17 @@ pub struct Model {
 pub enum OauthProvider {
     #[sea_orm(string_value = "G")]
     Google,
+}
+
+#[derive(EnumIter, DeriveActiveEnum, Debug, PartialEq, Serialize, Deserialize, Clone, Enum, Eq, Copy)]
+#[sea_orm(rs_type = "String", db_type = "String(Some(2))")]
+pub enum Role {
+    #[sea_orm(string_value = "SA")]
+    SpaceAdmin,
+    #[sea_orm(string_value = "SU")]
+    SpaceUser,
+    #[sea_orm(string_value = "AA")]
+    ApplicationAdmin,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
@@ -35,4 +47,12 @@ impl Entity {
         Self::find().filter(Column::Email.eq(email))
     }
 
+}
+
+#[derive(SimpleObject, Debug)]
+pub struct UserNode {
+    pub id: i32,
+    pub email: String,
+    pub display_name: String,
+    pub role: Role,
 }

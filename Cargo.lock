@@ -362,7 +362,7 @@ dependencies = [
  "http",
  "hyper 0.14.26",
  "ring",
- "time",
+ "time 0.3.21",
  "tokio 1.28.2",
  "tower",
  "tracing",
@@ -532,7 +532,7 @@ dependencies = [
  "percent-encoding",
  "regex",
  "sha2",
- "time",
+ "time 0.3.21",
  "tracing",
 ]
 
@@ -672,7 +672,7 @@ dependencies = [
  "itoa 1.0.6",
  "num-integer",
  "ryu",
- "time",
+ "time 0.3.21",
 ]
 
 [[package]]
@@ -985,14 +985,17 @@ checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
 name = "chrono"
-version = "0.4.25"
+version = "0.4.26"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fdbc37d37da9e5bce8173f3a41b71d9bf3c674deebbaceacd0ebdabde76efb03"
+checksum = "ec837a71355b28f6556dbd569b37b3f363091c0bd4b2e735674521b4c5fd9bc5"
 dependencies = [
  "android-tzdata",
  "iana-time-zone",
+ "js-sys",
  "num-traits",
  "serde",
+ "time 0.1.45",
+ "wasm-bindgen",
  "winapi 0.3.9",
 ]
 
@@ -1510,7 +1513,7 @@ checksum = "c85e1d9ab2eadba7e5040d4e09cbd6d072b76a557ad64e797c2cb9d4da21d7e4"
 dependencies = [
  "cfg-if 1.0.0",
  "libc",
- "wasi",
+ "wasi 0.11.0+wasi-snapshot-preview1",
 ]
 
 [[package]]
@@ -1574,6 +1577,7 @@ dependencies = [
  "migration",
  "serde",
  "shuttle-secrets",
+ "thiserror",
  "tokio 1.28.2",
  "tower-http",
 ]
@@ -1582,8 +1586,11 @@ dependencies = [
 name = "graphql-example-service"
 version = "0.1.0"
 dependencies = [
+ "chrono",
  "entity",
+ "google-oauth",
  "sea-orm",
+ "thiserror",
  "tokio 1.28.2",
 ]
 
@@ -2239,7 +2246,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "eebffdb73fe72e917997fad08bdbf31ac50b0fa91cec93e69a0662e4264d454c"
 dependencies = [
  "libc",
- "wasi",
+ "wasi 0.11.0+wasi-snapshot-preview1",
  "windows-sys 0.48.0",
 ]
 
@@ -3322,7 +3329,7 @@ dependencies = [
  "serde_json",
  "sqlx",
  "thiserror",
- "time",
+ "time 0.3.21",
  "tracing",
  "url",
  "uuid",
@@ -3397,7 +3404,7 @@ dependencies = [
  "rust_decimal",
  "sea-query-derive",
  "serde_json",
- "time",
+ "time 0.3.21",
  "uuid",
 ]
 
@@ -3413,7 +3420,7 @@ dependencies = [
  "sea-query",
  "serde_json",
  "sqlx",
- "time",
+ "time 0.3.21",
  "uuid",
 ]
 
@@ -3766,7 +3773,7 @@ dependencies = [
  "num-bigint",
  "num-traits",
  "thiserror",
- "time",
+ "time 0.3.21",
 ]
 
 [[package]]
@@ -3902,7 +3909,7 @@ dependencies = [
  "sqlx-rt",
  "stringprep",
  "thiserror",
- "time",
+ "time 0.3.21",
  "tokio-stream",
  "url",
  "uuid",
@@ -4077,6 +4084,17 @@ checksum = "3fdd6f064ccff2d6567adcb3873ca630700f00b5ad3f060c25b5dcfd9a4ce152"
 dependencies = [
  "cfg-if 1.0.0",
  "once_cell",
+]
+
+[[package]]
+name = "time"
+version = "0.1.45"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1b797afad3f312d1c66a56d11d0316f916356d11bd158fbc6ca6389ff6bf805a"
+dependencies = [
+ "libc",
+ "wasi 0.10.0+wasi-snapshot-preview1",
+ "winapi 0.3.9",
 ]
 
 [[package]]
@@ -4630,6 +4648,12 @@ dependencies = [
  "log",
  "try-lock",
 ]
+
+[[package]]
+name = "wasi"
+version = "0.10.0+wasi-snapshot-preview1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1a143597ca7c7793eff794def352d41792a93c481eb1042423ff7ff72ba2c31f"
 
 [[package]]
 name = "wasi"

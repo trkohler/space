@@ -1,11 +1,13 @@
-use ::entity::async_graphql::{InputType, Upload};
 use ::entity::bookable_resource;
 use ::entity::bookable_resource::Entity as Resource;
 use ::entity::bookable_resource::ResourceNode;
 use ::entity::plan;
 use ::entity::plan::PlanNode;
+use ::entity::user;
+use ::entity::user::UserNode;
+use chrono::*;
+use ::entity::user::Role;
 use sea_orm::*;
-use std::io::Read;
 
 pub struct Mutation;
 
@@ -61,5 +63,41 @@ impl Mutation {
                 .map(Into::into)?;
 
         resource.delete(db).await
+    }
+
+    pub async fn register_user(
+        db: &DbConn,
+        email: String,
+        display_name: String,
+    ) -> Result<UserNode, DbErr> {
+        let existing_user = user::Entity::find_by_email(email.clone()).one(db).await?;
+        println!("existing user: {:?}", existing_user);
+
+        if let Some(existing_user) = existing_user {
+            return Ok(UserNode {
+                id: existing_user.id,
+                email,
+                display_name,
+                role: existing_user.role,
+            });
+        }
+
+        let active_model = user::ActiveModel {
+            email: Set(email.clone()),
+            display_name: Set(display_name.clone()),
+            created_at: Set(Utc::now().naive_utc()),
+            oauth_provider: Set(user::OauthProvider::Google),
+            role: Set(Role::SpaceAdmin),
+            ..Default::default()
+        };
+
+        let res = active_model.insert(db).await?;
+
+        Ok(UserNode {
+            id: res.id,
+            email,
+            display_name,
+            role: Role::SpaceAdmin,
+        })
     }
 }

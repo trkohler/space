@@ -1,16 +1,14 @@
-use crate::async_graphql::futures_util::AsyncReadExt;
-use crate::async_graphql::{ErrorExtensions, Upload};
+use crate::async_graphql::{Error as GraphQLError, ErrorExtensions};
 use crate::db::Database;
 use async_graphql::{Context, Object, Result};
-use entity::async_graphql::{self, InputObject, SimpleObject};
+use entity::async_graphql::{self, InputObject};
 
 use crate::AppState;
-use axum::extract::State;
-use google_oauth::AsyncClient;
+use entity::sea_orm::DbErr;
+use entity::user::UserNode;
+use google_oauth::{AsyncClient, GooglePayload};
 use graphql_example_service::Mutation;
-use jsonwebtoken::{decode, DecodingKey, Validation};
-use serde::{Deserialize, Serialize};
-use std::io::Read;
+use thiserror::Error;
 
 #[derive(Default)]
 pub struct RegistrationMutation;
@@ -20,10 +18,34 @@ pub struct UserInput {
     pub google_jwt_token: String,
 }
 
+#[derive(Error, Debug)]
+pub enum RegisterUserError {
+    #[error("invalid data provided by oauth provider. Missing field: {missing_field:?}")]
+    InvalidDataProvided { missing_field: String },
+
+    #[error("google error: {0}")]
+    GoogleError(String),
+
+    #[error("Database error: {0}")]
+    DbError(#[from] DbErr),
+}
+
+impl ErrorExtensions for RegisterUserError {
+    fn extend(&self) -> GraphQLError {
+        GraphQLError::new(format!("{:?}", self)).extend_with(|err, e| {
+            e.set("code", 500);
+        })
+    }
+}
+
 #[Object]
 impl RegistrationMutation {
-    pub async fn register(&self, ctx: &Context<'_>, user_input: UserInput) -> Result<&str> {
-        println!("registering user with input {:?}", user_input);
+    pub async fn register(
+        &self,
+        ctx: &Context<'_>,
+        user_input: UserInput,
+    ) -> Result<UserNode, RegisterUserError> {
+
         let client_id = ctx
             .data::<AppState>()
             .unwrap()
@@ -35,10 +57,31 @@ impl RegistrationMutation {
         let data = client.validate_id_token(user_input.google_jwt_token).await;
         match data {
             Ok(data) => {
-                println!("data {:?}", data);
-                Ok("success")
+                let GooglePayload {
+                    email,
+                    family_name,
+                    given_name,
+                    ..
+                } = data;
+
+                let email = email.ok_or(RegisterUserError::InvalidDataProvided {
+                    missing_field: "email".to_owned(),
+                })?;
+                let family_name = family_name.ok_or(RegisterUserError::InvalidDataProvided {
+                    missing_field: "family_name".to_owned(),
+                })?;
+                let given_name = given_name.ok_or(RegisterUserError::InvalidDataProvided {
+                    missing_field: "given_name".to_owned(),
+                })?;
+                let display_name = given_name.clone() + " " + &family_name;
+
+                let db = ctx.data::<Database>().unwrap();
+                let node = Mutation::register_user(db.get_connection(), email, display_name)
+                    .await
+                    .map_err(|e| RegisterUserError::DbError(e))?;
+                Ok(node)
             }
-            Err(e) => Err(e.extend_with(|_, e| e.set("details", "Invalid token"))),
+            Err(e) => Err(RegisterUserError::GoogleError(e.to_string())),
         }
     }
 }
