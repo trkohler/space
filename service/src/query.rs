@@ -1,8 +1,8 @@
 use ::entity::bookable_resource::{Coordinate, Model as ResourceModel, ResourceNode};
 use ::entity::plan::{Model as PlanModel, PlanNode};
+use ::entity::user::{Entity as UserEntity, Model as UserModel, UserNode};
 use ::entity::{plan, plan::Entity as Plan};
-use sea_orm::*;
-use sea_orm::{DatabaseConnection, DbConn, DbErr};
+use sea_orm::{DbConn, DbErr};
 
 pub struct Query;
 
@@ -44,5 +44,20 @@ impl Query {
     pub async fn get_plan_with_resources(db: &DbConn, plan_id: i32) -> Result<plan::Model, DbErr> {
         // need to review structure of queries first
         unimplemented!();
+    }
+
+    pub async fn get_user_by_email(db: &DbConn, email: String) -> Result<Option<UserNode>, DbErr> {
+        let user: Option<UserModel> = UserEntity::find_by_email(email).one(db).await?;
+
+        if let Some(user) = user {
+            Ok(Some(UserNode {
+                id: user.id,
+                email: user.email,
+                display_name: user.display_name,
+                role: user.role,
+            }))
+        } else {
+            Ok(None)
+        }
     }
 }

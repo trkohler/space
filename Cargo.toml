@@ -16,3 +16,5 @@ shuttle-runtime = "0.19.0"
 tokio = "1.28.2"
 graphql-api = { path = "./api" }
 shuttle-secrets = "0.19.0"
+thiserror = "1.0.40"
+anyhow = "1.0.71"

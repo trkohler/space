@@ -1,13 +1,13 @@
-use crate::async_graphql::{Error as GraphQLError, ErrorExtensions};
 use crate::db::Database;
-use async_graphql::{Context, Object, Result};
-use entity::async_graphql::{self, InputObject};
+use async_graphql::{Context, Object, Result, InputObject, Error as GraphQLError, ErrorExtensions};
+use axum_extra::extract::cookie::Cookie;
+use cookie::time::Duration;
 
-use crate::AppState;
+use crate::{AppState, SecretStore};
 use entity::sea_orm::DbErr;
 use entity::user::UserNode;
 use google_oauth::{AsyncClient, GooglePayload};
-use graphql_example_service::Mutation;
+use graphql_example_service::{Mutation, Query};
 use thiserror::Error;
 
 #[derive(Default)]
@@ -46,21 +46,26 @@ impl RegistrationMutation {
         user_input: UserInput,
     ) -> Result<UserNode, RegisterUserError> {
 
+        let db = ctx.data::<Database>().unwrap();
+
         let client_id = ctx
-            .data::<AppState>()
+            .data::<SecretStore>()
             .unwrap()
-            .secrets
             .get("GOOGLE_CLIENT_ID")
             .unwrap();
 
         let client = AsyncClient::new(client_id);
-        let data = client.validate_id_token(user_input.google_jwt_token).await;
+
+        let data = client
+            .validate_id_token(user_input.google_jwt_token.clone())
+            .await;
         match data {
             Ok(data) => {
                 let GooglePayload {
                     email,
                     family_name,
                     given_name,
+                    exp,
                     ..
                 } = data;
 
@@ -75,10 +80,23 @@ impl RegistrationMutation {
                 })?;
                 let display_name = given_name.clone() + " " + &family_name;
 
-                let db = ctx.data::<Database>().unwrap();
+                let expiring = Duration::from(Duration::seconds(exp as i64));
+
                 let node = Mutation::register_user(db.get_connection(), email, display_name)
                     .await
                     .map_err(|e| RegisterUserError::DbError(e))?;
+
+                let cookie: Cookie =
+                    Cookie::build("google_token", user_input.google_jwt_token.clone())
+                        .path("/")
+                        .secure(true)
+                        .same_site(cookie::SameSite::None)
+                        .http_only(true)
+                        .max_age(expiring)
+                        .finish();
+
+                ctx.insert_http_header("Set-Cookie", cookie.to_string());
+
                 Ok(node)
             }
             Err(e) => Err(RegisterUserError::GoogleError(e.to_string())),
