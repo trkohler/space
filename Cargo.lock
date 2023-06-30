@@ -1671,6 +1671,7 @@ dependencies = [
 name = "graphql-api"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "async-graphql",
  "async-graphql-axum",
  "axum",
