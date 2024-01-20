@@ -1,8 +1,8 @@
 use crate::bookable_resource;
+use crate::bookable_resource::ResourceNode;
 use async_graphql::*;
 use sea_orm::{entity::prelude::*, SelectTwoMany};
 use serde::{Deserialize, Serialize};
-use crate::bookable_resource::ResourceNode;
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "plans")]

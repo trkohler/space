@@ -1,9 +1,7 @@
-use entity::user;
-use entity::sea_orm::DbBackend;
-use entity::sea_orm::EntityTrait;
-use entity::sea_orm::Schema;
-use sea_orm_migration::prelude::*;
 use crate::statements::{get_seaorm_create_stmt, get_seaorm_drop_stmt};
+
+use entity::user;
+use sea_orm_migration::prelude::*;
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;

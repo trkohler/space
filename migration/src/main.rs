@@ -1,6 +1,5 @@
 use migration::Migrator;
 
-
 #[cfg(debug_assertions)]
 use dotenv::dotenv;
 use sea_orm_migration::cli;

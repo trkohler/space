@@ -1,6 +1,6 @@
 use async_graphql::{EmptySubscription, Schema};
 use entity::async_graphql;
-use log::{error};
+use log::error;
 use migration::{Migrator, MigratorTrait};
 
 use crate::{

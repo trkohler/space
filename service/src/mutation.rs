@@ -4,9 +4,9 @@ use ::entity::bookable_resource::ResourceNode;
 use ::entity::plan;
 use ::entity::plan::PlanNode;
 use ::entity::user;
+use ::entity::user::Role;
 use ::entity::user::UserNode;
 use chrono::*;
-use ::entity::user::Role;
 use sea_orm::*;
 
 pub struct Mutation;

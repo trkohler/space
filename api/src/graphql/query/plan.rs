@@ -1,6 +1,6 @@
 use async_graphql::{Context, Object, Result};
-use entity::{async_graphql, plan};
-use entity::bookable_resource::{BookableResourceKind, Coordinate};
+use entity::async_graphql;
+
 use entity::plan::PlanNode;
 use graphql_example_service::Query;
 

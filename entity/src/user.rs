@@ -22,7 +22,9 @@ pub enum OauthProvider {
     Google,
 }
 
-#[derive(EnumIter, DeriveActiveEnum, Debug, PartialEq, Serialize, Deserialize, Clone, Enum, Eq, Copy)]
+#[derive(
+    EnumIter, DeriveActiveEnum, Debug, PartialEq, Serialize, Deserialize, Clone, Enum, Eq, Copy,
+)]
 #[sea_orm(rs_type = "String", db_type = "String(Some(2))")]
 pub enum Role {
     #[sea_orm(string_value = "SA")]
@@ -46,7 +48,6 @@ impl Entity {
     pub fn find_by_email(email: String) -> Select<Entity> {
         Self::find().filter(Column::Email.eq(email))
     }
-
 }
 
 #[derive(SimpleObject, Debug)]

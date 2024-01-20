@@ -1,5 +1,5 @@
 use async_graphql::*;
-use sea_orm::{entity::prelude::*, DeleteMany, JsonValue};
+use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize, SimpleObject)]
@@ -23,9 +23,7 @@ pub enum BookableResourceKind {
     Workspace,
 }
 
-#[derive(
-    Clone, Debug, PartialEq, Serialize, Deserialize, FromJsonQueryResult, SimpleObject,
-)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, FromJsonQueryResult, SimpleObject)]
 pub struct Coordinate {
     pub x: f32,
     pub y: f32,
@@ -61,11 +59,10 @@ impl Entity {
 
 impl ActiveModelBehavior for ActiveModel {}
 
-
 #[derive(SimpleObject)]
 pub struct ResourceNode {
     pub id: i32,
     pub coordinate: Coordinate,
     pub qr_code: Option<String>,
-    pub kind: BookableResourceKind
+    pub kind: BookableResourceKind,
 }

@@ -27,7 +27,6 @@ pub enum LoginError {
     DbError(#[from] DbErr),
 }
 
-
 #[Object]
 impl LoginMutation {
     pub async fn login(&self, ctx: &Context<'_>) -> Result<UserNode> {
@@ -50,7 +49,7 @@ impl LoginMutation {
 
         let user = Query::get_user_by_email(db.get_connection(), email.clone())
             .await
-            .map_err(|e| LoginError::DbError(e))?;
+            .map_err(LoginError::DbError)?;
         if let Some(user) = user {
             Ok(user)
         } else {
@@ -71,7 +70,7 @@ impl LoginMutation {
 
             let node = Mutation::register_user(db.get_connection(), email.clone(), display_name)
                 .await
-                .map_err(|e| LoginError::DbError(e))?;
+                .map_err(LoginError::DbError)?;
 
             Ok(node)
         }

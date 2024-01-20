@@ -54,7 +54,7 @@ impl RegistrationMutation {
         let data = client
             .validate_id_token(user_input.google_jwt_token.clone())
             .await
-            .map_err(|e| RegisterUserError::GoogleError(e))?;
+            .map_err(RegisterUserError::GoogleError)?;
 
         let GooglePayload {
             email,
@@ -76,7 +76,7 @@ impl RegistrationMutation {
 
         let node = Mutation::register_user(db.get_connection(), email, display_name)
             .await
-            .map_err(|e| RegisterUserError::DbError(e))?;
+            .map_err(RegisterUserError::DbError)?;
 
         Ok(node)
     }

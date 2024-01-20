@@ -4,7 +4,6 @@ pub mod guard;
 
 use async_graphql::http::{playground_source, GraphQLPlaygroundConfig};
 use async_graphql_axum::{GraphQLRequest, GraphQLResponse};
-use axum::extract::{FromRef, State};
 use axum::http::StatusCode;
 pub use axum::{
     extract::Extension,
@@ -17,7 +16,6 @@ use entity::async_graphql;
 pub use graphql::schema::{build_schema, AppSchema};
 pub use guard::guard;
 use shuttle_secrets::SecretStore;
-use std::sync::{Arc, Mutex};
 pub use tower_cookies::CookieManagerLayer;
 pub use tower_http::cors::CorsLayer;
 
@@ -27,8 +25,6 @@ pub async fn graphql_handler(
     parsed_token: Extension<Option<guard::ParsedGoogleToken>>,
     req: GraphQLRequest,
 ) -> GraphQLResponse {
-    println!("Parsed token in handler: {:?}", parsed_token.0);
-
     let execute = schema
         .execute(req.into_inner().data(secret_store.0).data(parsed_token.0))
         .await;
@@ -46,5 +42,3 @@ pub async fn graphql_playground() -> impl IntoResponse {
 pub struct AppState {
     pub secrets: SecretStore,
 }
-
-

@@ -23,7 +23,7 @@ impl Query {
             .map(|r| ResourceNode {
                 id: r.id,
                 qr_code: None,
-                kind: r.kind.clone(),
+                kind: r.kind,
                 coordinate: Coordinate {
                     x: r.coordinate.x,
                     y: r.coordinate.y,
@@ -41,7 +41,10 @@ impl Query {
         Plan::find_by_id(id).one(db).await
     }
 
-    pub async fn get_plan_with_resources(db: &DbConn, plan_id: i32) -> Result<plan::Model, DbErr> {
+    pub async fn get_plan_with_resources(
+        _db: &DbConn,
+        _plan_id: i32,
+    ) -> Result<plan::Model, DbErr> {
         // need to review structure of queries first
         unimplemented!();
     }

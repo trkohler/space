@@ -16,13 +16,18 @@ pub struct ParsedGoogleToken {
 }
 
 pub async fn guard<T>(mut request: Request<T>, next: Next<T>) -> Result<Response, StatusCode> {
-    let secret_store = request.extensions().get::<SecretStore>().ok_or(StatusCode::INTERNAL_SERVER_ERROR)?;
+    let secret_store = request
+        .extensions()
+        .get::<SecretStore>()
+        .ok_or(StatusCode::INTERNAL_SERVER_ERROR)?;
     let token = request
         .headers()
         .typed_get::<Authorization<Bearer>>()
         .map(|header| header.token().to_owned());
 
-    let secret = secret_store.get("GOOGLE_CLIENT_ID").ok_or(StatusCode::INTERNAL_SERVER_ERROR)?;
+    let secret = secret_store
+        .get("GOOGLE_CLIENT_ID")
+        .ok_or(StatusCode::INTERNAL_SERVER_ERROR)?;
 
     if let Some(token) = token {
         let client = AsyncClient::new(secret);

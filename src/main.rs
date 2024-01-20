@@ -3,9 +3,10 @@ use axum::http::header::{ACCEPT, AUTHORIZATION, CONTENT_TYPE};
 use axum::http::Method;
 use axum::middleware;
 use graphql_api::{
-    build_schema, get, graphql_handler, graphql_playground, guard, AppState, CookieManagerLayer,
-    CorsLayer, Extension, Key, Router,
+    build_schema, get, graphql_handler, graphql_playground, guard, CookieManagerLayer, CorsLayer,
+    Extension, Router,
 };
+
 use shuttle_secrets::SecretStore;
 
 #[shuttle_runtime::main]
