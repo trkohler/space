@@ -1,13 +1,13 @@
 ## Set Up
 
-to start the project, create `Secrets.toml` and add there `DATABASE_URL`.
+to start the project, create `Secrets.toml` and add there `DATABASE_URL` & `GOOGLE_CLIENT_ID`.
 
-Then, run `cargo shuttle run`.
+Then, run `cargo shuttle run --port 8080`.
 
-### Database
+### Infrastructure
 
-Database is postgres instance, provisioned by Neon.
-
+Database is postgres instance.
+Google Client ID is provisioned by Google Cloud.
 
 ### Endpoints
 
